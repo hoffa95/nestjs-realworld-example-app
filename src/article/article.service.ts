@@ -167,13 +167,14 @@ export class ArticleService {
     let article = new ArticleEntity();
     article.title = articleData.title;
     article.description = articleData.description;
+    article.body = articleData.body;
     article.slug = this.slugify(articleData.title);
     article.tagList = articleData.tagList || [];
     article.comments = [];
 
     const newArticle = await this.articleRepository.save(article);
 
-    const author = await this.userRepository.findOne({ where: { id: userId } });
+    const author = await this.userRepository.findOne({ where: { id: userId }, relations: ["articles"] });
 
     if (Array.isArray(author.articles)) {
       author.articles.push(article);
